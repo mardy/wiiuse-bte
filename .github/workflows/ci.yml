@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "master"
+      - "devel"
+  pull_request:
+    branches:
+      - "master"
+
+jobs:
+  code-format:
+    name: Check code formatting
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install uncrustify
+        run: sudo apt-get update -y && sudo apt-get install -y uncrustify
+
+      - name: Run uncrustify
+        run: |
+          uncrustify -c .uncrustify.cfg --replace --no-backup \
+              bte/*.c \
+              bte/*.h \
+              wiiuse/*.c \
+              wiiuse/*.h
+
+      - name: Check for differences
+        run: |
+          git diff > changes.diff
+          if test -s changes.diff; then
+              cat changes.diff
+              exit 1
+          fi
+
+  build-wii:
+    name: Build for Nintendo Wii
+    runs-on: ubuntu-latest
+    container: devkitpro/devkitppc:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Configure
+        run: |
+          # Workaround https://github.com/devkitPro/pacman-packages/issues/437
+          cp wiiuse/bt-embedded.pc /opt/devkitpro/portlibs/wii/lib/pkgconfig/
+          cmake -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/Wii.cmake" \
+              -DWITH_DEBUG=ON \
+              -S . -B build
+
+      - name: Build
+        run: cmake --build build -v
+
+      - name: Install
+        run: |
+          cmake --install build -v --prefix out
+          find out

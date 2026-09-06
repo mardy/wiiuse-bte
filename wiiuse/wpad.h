@@ -158,8 +158,18 @@ typedef struct _wpad_encstatus
 typedef void (*WPADDataCallback)(s32 chan, const WPADData *data);
 typedef void (*WPADShutdownCallback)(s32 chan);
 typedef void (*WPADDisconnectCallback)(s32 chan, u8 reason);
-typedef void (*WPADStatusCallback)(s32 chan);
 typedef void (*WPADHostSyncBtnCallback)(u32 held);
+
+enum {
+    WPAD_SPEAKER_FMT_MASK = 0xffff0000,
+    WPAD_SPEAKER_FREQ_MASK = 0x0000ffff,
+    WPAD_SPEAKER_FMT_PCM = 0x00010000,
+    WPAD_SPEAKER_FMT_ADPCM = 0x00020000,
+    WPAD_SPEAKER_FMT_PCM_1500 = (WPAD_SPEAKER_FMT_PCM | 1500),
+    WPAD_SPEAKER_FMT_PCM_2000 = (WPAD_SPEAKER_FMT_PCM | 2000),
+    WPAD_SPEAKER_FMT_ADPCM_3000 = (WPAD_SPEAKER_FMT_ADPCM | 3000),
+    WPAD_SPEAKER_FMT_ADPCM_6000 = (WPAD_SPEAKER_FMT_ADPCM | 6000),
+};
 
 s32 WPAD_Init(void);
 s32 WPAD_ControlSpeaker(s32 chan, s32 enable);
@@ -181,14 +191,13 @@ s32 WPAD_StopSearch(void);
 s32 WPAD_StartPairing(void);
 s32 WPAD_WipeSavedControllers(void);
 s32 WPAD_Shutdown(void);
-void WPAD_SetIdleTimeout(u32 seconds);
 void WPAD_SetPowerButtonCallback(WPADShutdownCallback cb);
 void WPAD_SetBatteryDeadCallback(WPADShutdownCallback cb);
 void WPAD_SetDisconnectCallback(WPADDisconnectCallback cb);
 void WPAD_SetHostSyncButtonCallback(WPADHostSyncBtnCallback cb);
-void WPAD_SetStatusCallback(WPADStatusCallback cb);
 s32 WPAD_ScanPads(void);
 s32 WPAD_Rumble(s32 chan, int status);
+void WPAD_SetIdleTimeout(u32 seconds);
 s32 WPAD_SetIdleThresholds(s32 chan, s32 btns, s32 ir, s32 accel, s32 js, s32 wb, s32 mp);
 void WPAD_EncodeData(WPADEncStatus *info, u32 flag, const s16 *pcmSamples, s32 numSamples, u8 *encData);
 WPADData *WPAD_Data(int chan);
@@ -201,8 +210,13 @@ void WPAD_Orientation(int chan, struct orient_t *orient);
 void WPAD_GForce(int chan, struct gforce_t *gforce);
 void WPAD_Accel(int chan, struct vec3w_t *accel);
 void WPAD_Expansion(int chan, struct expansion_t *exp);
-void WPAD_PadStatus(int chan);
 bool WPAD_IsBatteryCritical(int chan);
+
+#ifdef WIIUSE_HAS_PAD_STATUS_API
+typedef void (*WPADStatusCallback)(s32 chan);
+void WPAD_SetStatusCallback(WPADStatusCallback cb);
+void WPAD_PadStatus(int chan);
+#endif
 
 #ifdef __cplusplus
 }

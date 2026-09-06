@@ -5,6 +5,7 @@ project(wiiuse-bte
 )
 
 option(WITH_DEBUG "Build with debugging enabled" OFF)
+option(ENABLE_COMPAT_FEATURES "Build with all legacy features enabled" OFF)
 
 set(CMAKE_C_STANDARD 11)
 
@@ -15,7 +16,7 @@ include(FetchContent)
 if (NOT EXISTS "${CMAKE_SOURCE_DIR}/bt-embedded/CMakeLists.txt")
     FetchContent_Populate(bt-embedded
         GIT_REPOSITORY https://github.com/embedded-game-controller/bt-embedded.git
-        GIT_TAG        c7ebcdd17d740f3311b9764840b3f1ed2a49eb5f
+        GIT_TAG        746f51f0ff91adfe07d9a3f986dcd4b4320f01f7
         SOURCE_DIR     ${CMAKE_SOURCE_DIR}/bt-embedded
     )
 endif()
@@ -27,7 +28,7 @@ add_subdirectory(bt-embedded)
 if (NOT EXISTS "${CMAKE_SOURCE_DIR}/embedded-game-controller/CMakeLists.txt")
     FetchContent_Populate(egc
         GIT_REPOSITORY https://github.com/embedded-game-controller/embedded-game-controller.git
-        GIT_TAG        aacfc38ebe08e0f2a6e5e2c81558ee272ae452a1
+        GIT_TAG        e0c73fdfde51e1556fcfb364c3893493c5f005f3
         SOURCE_DIR     ${CMAKE_SOURCE_DIR}/embedded-game-controller
     )
 endif()

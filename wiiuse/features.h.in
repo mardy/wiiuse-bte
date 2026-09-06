@@ -1,0 +1,17 @@
+/* SPDX-License-Identifier: Zlib */
+/* SPDX-FileCopyrightText: Copyright devkitPro */
+/* SPDX-FileCopyrightText: Alberto Mardegan (mardy) */
+
+#ifndef WIIUSE_BTE_FEATURES_H
+#define WIIUSE_BTE_FEATURES_H
+
+#cmakedefine WIIUSE_ALL_FEATURES
+
+#ifdef WIIUSE_ALL_FEATURES
+#define WIIUSE_HAS_NUNCHUK_ACCEL_CALIB
+#define WIIUSE_HAS_NUNCHUK_FLAGS
+#define WIIUSE_HAS_PAD_STATUS_API
+#define WIIUSE_HAS_SENSOR_BAR_DATA
+#endif
+
+#endif /* WIIUSE_BTE_FEATURES_H */

@@ -5,6 +5,8 @@
 #ifndef WIIUSE_BTE_WIIUSE_H
 #define WIIUSE_BTE_WIIUSE_H
 
+#include <wiiuse/features.h>
+
 /* led bit masks */
 #define WIIMOTE_LED_NONE 0x00
 #define WIIMOTE_LED_1    0x10
@@ -387,7 +389,9 @@ typedef struct ir_t {
     int state;                      /**< keeps track of the IR state        */
 
     int raw_valid;                  /**< is the raw position valid?         */
+#ifdef WIIUSE_HAS_SENSOR_BAR_DATA
     sb_t sensorbar;                 /**< sensor bar, detected or guessed    */
+#endif
     float ax;                       /**< raw X coordinate                   */
     float ay;                       /**< raw Y coordinate                   */
     float distance;                 /**< pixel width of the sensor bar      */
@@ -442,10 +446,14 @@ typedef struct joystick_t {
  *  @brief Nunchuk expansion device.
  */
 typedef struct nunchuk_t {
+#ifdef WIIUSE_HAS_NUNCHUK_ACCEL_CALIB
     struct accel_t accel_calib;     /**< nunchuk accelerometer calibration      */
+#endif
     struct joystick_t js;           /**< joystick calibration                   */
 
+#ifdef WIIUSE_HAS_NUNCHUK_FLAGS
     int *flags;                     /**< options flag (points to wiimote_t.flags) */
+#endif
 
     ubyte btns;                     /**< what buttons have just been pressed    */
     ubyte btns_last;                /**< what buttons have just been pressed    */

@@ -54,6 +54,7 @@ jobs:
           cp wiiuse/bt-embedded.pc /opt/devkitpro/portlibs/wii/lib/pkgconfig/
           cmake -DCMAKE_TOOLCHAIN_FILE="$DEVKITPRO/cmake/Wii.cmake" \
               -DWITH_DEBUG=ON \
+              -DENABLE_COMPAT_FEATURES=ON \
               -S . -B build
 
       - name: Build

@@ -354,6 +354,12 @@ static bool is_registered(const egc_bt_address_t *address)
     return get_registered_device(address) != NULL;
 }
 
+static bool is_wiimote(u16 vendor_id, u16 product_id)
+{
+    return vendor_id == 0x057e &&
+           (product_id == 0x0306 || product_id == 0x0330);
+}
+
 static void device_added_cb(egc_input_device_t *device, void *userdata)
 {
     int chan = -1;
@@ -420,9 +426,8 @@ static void device_added_cb(egc_input_device_t *device, void *userdata)
     Controller *controller = &s_controllers[chan];
     controller_init(controller);
     controller->egc_device = device;
-    controller->is_wiimote =
-        device->desc->vendor_id == 0x057e &&
-        (device->desc->product_id == 0x0306 || device->desc->product_id == 0x0330);
+    controller->is_wiimote = is_wiimote(device->desc->vendor_id,
+                                        device->desc->product_id);
     egc_input_device_set_leds(device, 1 << chan);
     controller_update_data_format(controller);
     controller_update_motion_plus(controller);
@@ -453,7 +458,7 @@ static void device_removed_cb(egc_input_device_t *device, void *userdata)
 
 static egc_bt_connection_reply_e connection_filter_cb(
     const egc_bt_address_t *address,
-    u16 service_class, u8 device_class_major, u8 device_class_minor,
+    const egc_bt_device_info_t *info,
     bool is_incoming, void *userdata)
 {
     WPAD_DEBUG("Connection with " EGC_BT_ADDRESS_FMT ", incoming=%d",
@@ -477,7 +482,8 @@ static egc_bt_connection_reply_e connection_filter_cb(
          * pairing to a new device. No matter whether this is a permanent or
          * guest pairing, both require an authenticated connection.
          */
-        return EGC_BT_CONNECTION_REPLY_REQ_AUTH;
+        return is_wiimote(info->vendor_id, info->product_id) ?
+               EGC_BT_CONNECTION_REPLY_REQ_AUTH : EGC_BT_CONNECTION_REPLY_ACCEPT;
     }
 }
 

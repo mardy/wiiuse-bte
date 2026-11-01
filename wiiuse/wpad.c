@@ -858,7 +858,7 @@ static void update_ir(Controller *controller, InputReport *report)
     if (controller->is_wiimote) {
         float sb_angle = report->sb_angle;
         ir->distance = report->sb_width;
-        ir->angle = sb_angle;
+        ir->angle = sb_angle * 180 / M_PI;
 #ifdef WIIUSE_HAS_SENSOR_BAR_DATA
         sb_t *sb = &ir->sensorbar;
         sb->angle = sb->off_angle = sb_angle;

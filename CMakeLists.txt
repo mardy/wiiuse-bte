@@ -33,6 +33,7 @@ if (NOT EXISTS "${CMAKE_SOURCE_DIR}/embedded-game-controller/CMakeLists.txt")
     )
 endif()
 set(BUILD_EXAMPLE OFF CACHE INTERNAL "")
+set(WITH_DRIVER_GAMECUBE OFF CACHE INTERNAL "")
 # To find our bt-embedded.pc file
 set(ENV{PKG_CONFIG_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/wiiuse:$ENV{PKG_CONFIG_PATH}")
 add_subdirectory(embedded-game-controller)

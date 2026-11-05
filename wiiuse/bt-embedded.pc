@@ -1,0 +1,6 @@
+Name: BtEmbedded
+Description: Bluetooth for embedded devices
+Version: 1.0
+Libs.private: -lm
+Libs:
+Cflags:
